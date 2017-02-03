@@ -1,0 +1,15 @@
+net: "/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/new_high/resnet_now2.prototxt"
+
+test_iter: 312
+test_interval: 500
+base_lr: 0.001
+lr_policy: "step"
+gamma: 0.1
+stepsize: 9000
+display: 20
+max_iter: 45000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 5000
+snapshot_prefix: "{SNAPSHOT}"
+solver_mode: GPU
