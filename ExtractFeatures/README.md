@@ -22,7 +22,8 @@
 
    2) Example:
 
-      python feature_extractor.py --caffemodel ../Models/res50-TripleLoss-dropout__iter_40000.caffemodel
+      python feature_extractor.py
+				  --caffemodel ../Models/res50-TripleLoss-dropout__iter_40000.caffemodel
 
       	     			  --orig_data /data/data/Market-1501-v15.09.15/pose_box_train
 
