@@ -36,7 +36,7 @@ class ReIDDataLayer():
 
 		for key in filedIDCounter:
 			#print(filedIDCounter[key])
-			filedIDCounter[key] = filedIDCounter[key] * 1.0
+			filedIDCounter[key] = filedIDCounter[key] * 0.9
 
 
 
@@ -116,12 +116,15 @@ if __name__ == '__main__':
         parser.add_argument('--orig_data', help='the path of original data')
         parser.add_argument('--pose_data', help='the path of posebox data')
         parser.add_argument('--csv_list', help='the csv file that stores the confidence scores of posebox')
+        parser.add_argument('--output_dir', help='the output path of all hdf5 data')
         args = parser.parse_args()
-        assert args.orig_data and args.pose_data and args.csv_list
+        assert args.orig_data and args.pose_data and args.csv_list and args.output_dir
         print args.orig_data
         print args.pose_data
         print args.csv_list
-        exit(0)
+        print args.output_dir
+
+        
         
         # reid_home_dir = '/home/eric/re-id'
 	a = ReIDDataLayer(args.orig_data,
@@ -134,37 +137,30 @@ if __name__ == '__main__':
 	
 	counter = 0
 
-	txt_file = open("./hdf5_data_list.txt", "w")
-
-
-	# net = caffe.Classifier('/home/eric/re-id/train/Caffe/resNet50_Baseline_remote/ResNet-50-Joint-Merge-Shared1 (deploy).prototxt',
- #            '/home/eric/re-id/train/Caffe/resNet50_Baseline_remote/snapshot/res50_Joint_Shared_iter_30000.caffemodel', caffe.TEST)######
-	net = caffe.Classifier('/home/eric/re-id/train/Caffe/alexNet_tripleLoss_hdf5/init/orig_alexModel_deploy',
-            '/home/eric/re-id/train/Caffe/alexNet_tripleLoss_hdf5/init/bvlc_alexnet.caffemodel', caffe.TEST)######
+	txt_file = open("./hdf5_train_data_list.txt", "w")
 
 
 	blob = caffe.proto.caffe_pb2.BlobProto()
-	mean_data = open( '/home/eric/re-id/train/Caffe/resNet50_Baseline_remote/ResNet_mean.binaryproto' , 'rb' ).read()
+	mean_data = open( './ResNet_mean.binaryproto' , 'rb' ).read()
 	blob.ParseFromString(mean_data)
 	arr = np.array( caffe.io.blobproto_to_array(blob) )[0]
 
-	pose_data_transformer = caffe.io.Transformer({'pose_data': net.blobs['data'].data.shape})
-	pose_data_transformer.set_transpose('pose_data', (2,0,1))
-	pose_data_transformer.set_mean('pose_data', arr.mean(1).mean(1)) # mean pixel
-	# pose_data_transformer.set_mean('pose_data', np.array([104, 117, 123])) # mean pixel
-	pose_data_transformer.set_raw_scale('pose_data', 255) # the reference model operates on images in [0,255] range instead of [0,1]
-	pose_data_transformer.set_channel_swap('pose_data', (2,1,0)) # the reference model has channels in BGR order instead of RGB
+	data_transformer = caffe.io.Transformer({'data': (1,3,224,224)})
+	data_transformer.set_transpose('data', (2,0,1))
+	data_transformer.set_mean('data', arr.mean(1).mean(1)) # mean pixel
+	data_transformer.set_raw_scale('data', 255) # the reference model operates on images in [0,255] range instead of [0,1]
+	data_transformer.set_channel_swap('data', (2,1,0)) # the reference model has channels in BGR order instead of RGB
 
 
 	for k in a.train_data_list:
-		pose = pose_data_transformer.preprocess('pose_data', caffe.io.load_image(k[0])).reshape((1,3,227,227))
-		orig = pose_data_transformer.preprocess('pose_data', caffe.io.load_image(k[1])).reshape((1,3,227,227))
-		exit(0)
+		pose = data_transformer.preprocess('data', caffe.io.load_image(k[0])).reshape((1,3,224,224))
+		orig = data_transformer.preprocess('data', caffe.io.load_image(k[1])).reshape((1,3,224,224))
+		
 		conf = k[2]
 		label = k[3]
 		name = k[4]
 		# print(label.shape)
-		path_ = '/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/alex_cuhk/'+name[0:-4]+'.h5'
+		path_ = args.output_dir + '/' + name[0:-4]+'.h5'
 		#print path_
 		hf = h5py.File(path_, 'w')
 		hf.create_dataset('/pose_data', data=pose)
@@ -173,8 +169,7 @@ if __name__ == '__main__':
 		hf.create_dataset('/label', data=label)
 		a_path = os.path.abspath(path_)
 		print(a_path)
-		# txt_file.write('/home/eric/re-id/train/Caffe/eric_resNet50_Joint/eric_dataset/train/'+name[0:-4]+'.h5\n')
-		txt_file.write('/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/alex_cuhk/'+name[0:-4]+'.h5\n')
+		txt_file.write(args.output_dir + '/' + name[0:-4]+'.h5\n')
 
 
 
@@ -183,7 +178,7 @@ if __name__ == '__main__':
 			pose[0,c,:,:] = np.fliplr(pose[0,c,:,:])
 			orig[0,c,:,:] = np.fliplr(orig[0,c,:,:])
 		conf = np.fliplr(conf)
-		path_ = '/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/alex_cuhk/'+name[0:-4]+'_m.h5'
+		path_ = args.output_dir + '/' + name[0:-4]+'_m.h5'
 		hf = h5py.File(path_, 'w')
 		hf.create_dataset('/pose_data', data=pose)
 		hf.create_dataset('/orig_data', data=orig)
@@ -191,9 +186,38 @@ if __name__ == '__main__':
 		hf.create_dataset('/label', data=label)
 		a_path = os.path.abspath(path_)
 		print(a_path)
-		txt_file.write('/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/alex_cuhk/'+name[0:-4]+'_m.h5\n')
+		txt_file.write(args.output_dir + '/' + name[0:-4]+'_m.h5\n')
 		
 		counter = counter + 1	
 
 	print counter
 	print len(a.train_data_list)
+
+
+        ####### handle val data
+        counter = 0
+	txt_file = open("./hdf5_test_data_list.txt", "w")
+
+	for k in a.test_data_list:
+		pose = data_transformer.preprocess('data', caffe.io.load_image(k[0])).reshape((1,3,224,224))
+		orig = data_transformer.preprocess('data', caffe.io.load_image(k[1])).reshape((1,3,224,224))
+		
+		conf = k[2]
+		label = k[3]
+		name = k[4]
+		# print(label.shape)
+		path_ = args.output_dir + '/' + name[0:-4]+'.h5'
+		#print path_
+		hf = h5py.File(path_, 'w')
+		hf.create_dataset('/pose_data', data=pose)
+		hf.create_dataset('/orig_data', data=orig)
+		hf.create_dataset('/conf', data=conf)
+		hf.create_dataset('/label', data=label)
+		a_path = os.path.abspath(path_)
+		print(a_path)
+		txt_file.write(args.output_dir + '/' + name[0:-4]+'.h5\n')
+		
+		counter = counter + 1	
+
+	print counter
+	print len(a.test_data_list)

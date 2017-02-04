@@ -8,6 +8,8 @@ require('sys')
 TPM_pose_estimation = torch.load('../Models/TPM_pose_estimation_lite.t7')
 TPM_pose_estimation:cuda()
 
+-- Modify Here to change data dir:
+data_dir = '/data/data/Market-1501-v15.09.15/bounding_box_train/'
 
 require'lfs'
 require('torchx')
@@ -19,9 +21,8 @@ file_output = assert(io.open('./re-id_pose.csv','w'))
 file_output:write('file_name,head_x,head_y,head_confidence,neck_x,neck_y,neck_confidence,Rshoulder_x,Rshoulder_y,Rshoulder_confidence,Relbow_x,Relbow_y,Relbow_confidence,Rwrist_x,Rwrist_y,Rwrist_confidence,Lshoulder_x,Lshoulder_y,Lshoulder_confidence,Lelbow_x,Lelbow_y,Lelbow_confidence,Lwrist_x,Lwrist_y,Lwrist_confidence,Rhip_x,Rhip_y,Rhip_confidence,Rknee_x,Rknee_y,Rknee_confidence,Rankle_x,Rankle_y,Rankle_confidence,Lhip_x,Lhip_y,Lhip_confidence,Lknee_x,Lknee_y,Lknee_confidence,Lankle_x,Lankle_y,Lankle_confidence\n')
 counter = 0
 
--- for file in lfs.dir[[/home/eric/re-id/Market-1501-v15.09.15/bounding_box_test/]] do
-for file in lfs.dir[[/data/data/Market-1501-v15.09.15/bounding_box_train/]] do
-  absolute_file = "/data/data/Market-1501-v15.09.15/bounding_box_train/"..file
+for file in lfs.dir(data_dir) do
+  absolute_file = data_dir..file
     if lfs.attributes(absolute_file,"mode") == "file" and string.find(file, 'jpg') ~= nil then
       print("running image: "..absolute_file)
 
