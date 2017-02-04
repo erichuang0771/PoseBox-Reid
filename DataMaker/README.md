@@ -40,7 +40,7 @@ There are main three steps to create data for PoseBox-Reid:
  
     1. Check hdf5maker.py to build hdf5 database for training.
 
-    Ex:  python hdf5maker_final.py --orig_data /data/data/Market-1501-v15.09.15/bounding_box_train 
+    Ex:  python hdf5maker.py --orig_data /data/data/Market-1501-v15.09.15/bounding_box_train 
                                    --pose_data /data/data/Market-1501-v15.09.15/pose_box_train 
                                    --csv_list re-id_pose.csv 
                                    --output_dir /data/data/Market_hdf5
