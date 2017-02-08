@@ -4678,20 +4678,11 @@ layer {
 	}
 }
 
-layer {
-  name: "overall_drop"
-  type: "Dropout"
-  bottom: "concat"
-  top: "overall_drop"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
 
 layer {
   name: "overall_fc751"
   type: "InnerProduct"
-  bottom: "overall_drop"
+  bottom: "concat"
   top: "overall_fc751"
   param {
     lr_mult: 10
