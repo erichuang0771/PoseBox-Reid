@@ -2,7 +2,7 @@
 
 1) Download models in ../Models folder
 
-  Detail: see README in ../Models fold* asderasdasd
+  * Detail: see README in ../Models folder
 
 2) Run the python script that rename all weights in two model and create a new two-stream network
 
