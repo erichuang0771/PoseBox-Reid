@@ -1,10 +1,10 @@
 import caffe
 import numpy as np
 
-image_res50 = caffe.Net('res50_img_baseline_deploy.prototxt', 'ResNet_Img__iter_40000.caffemodel', caffe.TEST)
-pose_res50 = caffe.Net('res50_pose_baseline_deploy.prototxt', 'ResNet_pose16__iter_40000.caffemodel', caffe.TEST)
+image_res50 = caffe.Net('res50_img_baseline_deploy.prototxt', '../Models/ResNet_OrigImg__iter_40000.caffemodel', caffe.TEST)
+pose_res50 = caffe.Net('res50_pose_baseline_deploy.prototxt', '../Models/ResNet_PoseBox__iter_40000.caffemodel', caffe.TEST)
 
-tripleLoss_resnet50 = caffe.Net('./res50_tripleLoss.prototxt','ResNet_Img__iter_40000.caffemodel',caffe.TEST)
+tripleLoss_resnet50 = caffe.Net('./res50_tripleLoss.prototxt','../Models/ResNet_PoseBox__iter_40000.caffemodel',caffe.TEST)
 
 layer_name_list = image_res50.params.keys()
 

@@ -12,7 +12,7 @@ layer {
 		phase: TRAIN
 	}
    hdf5_data_param {
-     source: "/home/eric/re-id/train/Caffe/eric_resNet50_Joint/eric_dataset/train_hdf5.txt"
+     source: "../DataMaker/hdf5_train_data_list.txt"
      batch_size: 8
      shuffle : true 
    }
@@ -30,7 +30,7 @@ layer {
 		phase: TEST
 	}
    hdf5_data_param {
-     source: "/home/eric/re-id/train/Caffe/eric_resNet50_Joint/eric_dataset/val_hdf5.txt"
+     source: "../DataMaker/hdf5_test_data_list.txt"
      batch_size: 2
    }
 }
