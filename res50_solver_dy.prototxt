@@ -1,4 +1,4 @@
-net: "/media/eric/b13d4a46-a007-4c3c-b23e-c198cf4899c0/home/mscv/Data/new_high/resnet_now2.prototxt"
+net: "{NET}"
 
 test_iter: 312
 test_interval: 500
