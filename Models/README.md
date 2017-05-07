@@ -1,7 +1,9 @@
 
+
 To Download the Models:
 
 visit: www.visualsolver.com:6008
+Backup: http://www.visualsolver.xyz:8080/
 
 Five models are availble:
 1)  ResNet_OrigImg__iter_40000.caffemodel
