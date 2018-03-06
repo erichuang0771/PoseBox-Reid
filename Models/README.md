@@ -3,6 +3,8 @@
 To Download the Models:
 
 visit: www.visualsolver.com:6008
+OR: https://pan.baidu.com/s/1N3a29gYp4ISmU2CyRZj-Zw
+OR:
 Backup: http://www.visualsolver.xyz:8080/
 
 Five models are availble:
